@@ -1,7 +1,8 @@
 #
 # An arrangement of tiles
 class TileMap < Chingu::BasicGameObject
-  attr_accessor :map,:name
+  attr_accessor :map,:name,:tids
+    
   def initialize options
     @size = options[:size]
     @width = @size[0]
@@ -19,18 +20,30 @@ class TileMap < Chingu::BasicGameObject
     @map = Array.new(@width){Array.new(@height){Tile.new(:x=>8)}}
     @map.each_index{|j| @map[j].each_index{|i| @map[j][i].y = i *@map[j][i].image.height + @map[j][i].image.height/2 ; @map[j][i].x =j *@map[j][i].image.width + @map[j][i].image.width/2  } } # set initial positions of tiles
     get_drawable_grid
+    
+    @tileset = nil
   end
   
   def size
     @width*@height
   end
   
+  def add_tileset options
+    fail("tileset cannot added before tids (tile id's) are defined") unless @tids
+    
+    @tileset = TileSet.new(:tids=>@tids,:tileset=>options[:image],:name =>options[:name])
+  end
+  
   #
-  #given an array of numbers, assign each tile in the map a type
-  def set_tiles array
+  #create a tileset and assign each tile a face from it
+  def set_tiles array, tileset_info
     fail("wrong sized tile info given to map") unless array.size == size
+    @tids = array
+    add_tileset tileset_info
+    
     t =0
-    @height.times{|h| @map.each{|w| w[h].type = array[t];t+=1}} #breadth first through a 2d array - feels dubious...
+    @height.times{|h| @map.each{|w| w[h].set_info array[t],@tileset;t+=1}} #breadth first through a 2d array - feels dubious...
+    
   end
   
   #
@@ -43,7 +56,7 @@ class TileMap < Chingu::BasicGameObject
   #draw everytile that is visible on screen
   def draw
     super
-    @map[@min_x..@max_x].each{|x| x[@min_y..@max_y].each{|y| y.draw unless y == nil}} unless @min_x > @max_x
+    @map[@min_x..@max_x].each{|x| x[@min_y..@max_y].each{|y| y.draw }} unless @min_x > @max_x
   end
   
   #
@@ -82,7 +95,7 @@ class TileMap < Chingu::BasicGameObject
   def min_x nv ; nv >= 0 ? @min_x =nv : @min_x = 0 end
   def min_y nv ; nv >= 0 ? @min_y =nv : @min_y = 0 end
   def max_x nv ; nv <= @width-1 ? @max_x =nv : @max_x = @width-1 end
-  def max_y nv ; nv <= @height-1 ? @max_y =nv : @min_y = @height-1 end
+  def max_y nv ; nv <= @height-1 ? @max_y =nv : @max_y = @height-1 end
   
   #
   # given coordinates, return the cell that this maps to
@@ -95,23 +108,39 @@ class TileMap < Chingu::BasicGameObject
   end
   
   class TileSet
+    attr_reader :name
+    include Chingu::NamedResource
+   
+    TileSet.autoload_dirs = [ File.join("media","maps")]
+
+    def self.find(name)
+      (path = find_file(name)) ? path : nil
+    end
+    
     def initialize options
       #tile image
+      @image = options[:tileset].split('/').last
       #name
-      #dimensions
-      #array of rectangles corresponding to tiles
+      @name = options[:name] || "nonameset"
+      @tids = options[:tids]
+      
+      #load all tiles from tileset image
+      tiles = Gosu::Image.load_tiles($window,TileSet.find(@image),Tile.const_get('TILE_WIDTH'),Tile.const_get('TILE_HEIGHT'),true)
+      #keep only the tiles used in the map
+      @tiles = {}
+      @tids.each{|x|@tiles[x]= tiles[x-1] unless x==0}
     end
     
     #
-    #given a tile number, return an instance of Tile
+    #given a tile number, return an image that maps to it
     def get_tile tile_no
+      @tiles[tile_no] ? @tiles[tile_no] : fail("tile #{tile_no} does not exist in this map")
     end
   end
   
   class Tile 
-    attr_accessor :solid, :x,:y,:image, :name, :type
+    attr_accessor :solid, :x,:y,:image, :name, :type, :tileset
     def initialize options
-      @type = 0
       @name = options[:name] || "t_default.png"
       @image = Gosu::Image[@name].retrofy
       @solid = true
@@ -119,8 +148,13 @@ class TileMap < Chingu::BasicGameObject
       @y = 0
     end
     
+    def set_info type, tileset
+      @type = type
+      type ==0 ? @image=nil : @image = tileset.get_tile(type)
+    end
+      
     def draw
-      @image.draw(@x-TILE_WIDTH/2,@y-TILE_HEIGHT/2,0)
+      @image.draw(@x-TILE_WIDTH/2,@y-TILE_HEIGHT/2,0) if @image
     end
   
   end

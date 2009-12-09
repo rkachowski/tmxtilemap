@@ -10,9 +10,15 @@ class Game < Chingu::Window
     
     super(640,480,false)
     self.input = {:esc =>:exit}
-    TmxTileMapLoader.new("testy.tmx")
-    exit
+    @map = TmxTileMapLoader.load("testy.tmx")
+    puts @map.tids
   end
+  
+  def draw 
+    super
+    @map.draw
+  end
+  
 end
 
 Game.new.show
