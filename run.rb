@@ -9,7 +9,7 @@ class Game < Chingu::Window
   def initialize
     super(640,480,false)
     self.input = {:esc =>:exit,:left_mouse_button=>:click, :holding_left=>:m_left}
-    @j = TileMap.create(:size => [50,30])
+    @j = TileMap.create(:size => [50,30],:tilesize =>[16,16])
     
   end
   
