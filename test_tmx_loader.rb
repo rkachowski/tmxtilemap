@@ -10,13 +10,18 @@ class Game < Chingu::Window
     
     super(640,480,false)
     self.input = {:esc =>:exit}
-    @map = TmxTileMapLoader.load("testy.tmx")
-    puts @map.tids
+    @map = TmxTileMapLoader["halltest.tmx"]
   end
   
   def draw 
     super
     @map.draw
+  end
+  
+  def update
+    super
+    @map.move [-1,0]
+    self.caption = "test .tmx loading fps #{self.fps}"
   end
   
 end

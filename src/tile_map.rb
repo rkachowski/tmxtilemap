@@ -35,6 +35,14 @@ class TileMap < Chingu::BasicGameObject
   end
   
   #
+  #given a point, return a value that says whether this space is free or not
+  def solid_point? position
+    #puts position
+    cell = get_map_cell(position)
+    @map[cell[0]][cell[1]].solid
+  end
+  
+  #
   #create a tileset and assign each tile a face from it
   def set_tiles array, tileset_info
     fail("wrong sized tile info given to map") unless array.size == size
@@ -107,6 +115,13 @@ class TileMap < Chingu::BasicGameObject
     [x,y]
   end
   
+  #
+  # returns the tile at this position, used for collision response
+  def get_tile_at position
+    c = get_map_cell position
+    @map[c[0]][c[1]]
+  end
+  
   class TileSet
     attr_reader :name
     include Chingu::NamedResource
@@ -150,13 +165,24 @@ class TileMap < Chingu::BasicGameObject
     
     def set_info type, tileset
       @type = type
-      type ==0 ? @image=nil : @image = tileset.get_tile(type)
+      type ==0 ? empty : @image = tileset.get_tile(type)
     end
       
+    def empty
+      @solid = false
+      @image = nil
+    end
+    
     def draw
       @image.draw(@x-TILE_WIDTH/2,@y-TILE_HEIGHT/2,0) if @image
     end
-  
+    
+    def t
+      @y-TILE_HEIGHT/2
+    end
+    def b
+      @y+TILE_HEIGHT/2
+    end
   end
   
 end
