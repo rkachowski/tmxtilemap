@@ -183,6 +183,13 @@ class TileMap < Chingu::BasicGameObject
     def b
       @y+TILE_HEIGHT/2
     end
+    def l
+      @x -TILE_WIDTH/2
+    end
+    def r
+      @x + TILE_WIDTH/2
+    end
+    
   end
   
 end

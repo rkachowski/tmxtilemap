@@ -8,7 +8,9 @@ class Character < Chingu::GameObject
     @behaviours = [] #sequential behaviours
     @std_behaviours =[] #parallel behaviours that are always run
     
-    @std_behaviours << TileCollisionResponse.new(:character => self)
+    #
+    # debug/dev crap
+    add_std_behaviour TileCollisionResponse, {}
   end
   
   def move position
@@ -20,6 +22,8 @@ class Character < Chingu::GameObject
     super
     update_behaviours
   end
+   
+  protected
   #
   # update the behaviours -
   def update_behaviours
@@ -33,38 +37,18 @@ class Character < Chingu::GameObject
   end
   
   #
+  # add a standard behaviour - one that is never complete e.g. falling via force of gravity
+  def add_std_behaviour behaviour_class, options
+    options[:character ]=self
+    b = behaviour_class.new(options)
+    @std_behaviours << b if b.kind_of? Behaviour
+  end
+  
+  #
   # add a behaviour - takes the class and options
   def add_behaviour behaviour_class, options
     options[:character ]=self
     b = behaviour_class.new(options)
     @behaviours << b if b.kind_of? Behaviour
   end
-  #
-  # return the direction (:up , :down,:left, :right) of this character relative to another
-  def direction_from other_character
-    type = "nothing"
-    
-    # adding offset incase we have already intersected other_character
-    offset = @speed+3
-    
-    if (@y+@image.height/2)-offset <= (other_character.y-other_character.image.height/2)
-      type = :up
-    elsif(@y-@image.height/2)+offset >= (other_character.y+other_character.image.height/2)
-      type = :down
-    else
-      #we are neither above nor below other_character, but within it's y boundries
-      if (@x+@image.width/2)-offset <=(other_character.x-other_character.image.width/2)
-        type = :left
-      elsif (@x-@image.width/2)+offset >=(other_character.x+other_character.image.width/2)
-        type = :right
-      else
-        #we screwed up, probably completely inside of other_character
-        puts "ohno"
-      end
-      type unless type.class == String
-    end
-     
-    type 
-  end
-  
 end

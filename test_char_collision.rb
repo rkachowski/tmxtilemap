@@ -9,7 +9,7 @@ class Game < Chingu::Window
   def initialize
     
     super(640,480,false)
-    self.input = {:esc =>:exit, :holding_up => :uup, :holding_down => :dwn}
+    self.input = {:esc =>:exit, :holding_up => :uup, :holding_down => :dwn,:holding_left => :lleft,:holding_right => :rright}
     @map = TmxTileMapLoader["halltest.tmx"] 
     @c = Character.create(:x=>200,:y=>350,:image=>Gosu::Image["man.png"],:tilemap=>@map)
   end
@@ -25,6 +25,8 @@ class Game < Chingu::Window
   end
   def dwn ; @c.y+=2;end
   def uup ; @c.y-=2;end
+  def lleft; @c.x-=2;end
+  def rright;@c.x+=2;end
 end
 
 Game.new.show
