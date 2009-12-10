@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
+<map version="1.0" orientation="orthogonal" width="60" height="30" tilewidth="16" tileheight="16">
+ <tileset name="kren" firstgid="1" tilewidth="16" tileheight="16">
+  <image source="kren.png"/>
+ </tileset>
+ <tileset name="arachne" firstgid="438" tilewidth="16" tileheight="16" spacing="1">
+  <image source="bugtilesblueb.png"/>
+ </tileset>
+ <layer name="Layer 0" width="60" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAAO3PUQ5AMBBF0bIKbAKrswtrsiVffk2DECExiaY17kleMm1a+pzbFZJSUrl/oK9t9LWNvrbR1zb62kZf27R9h2zJ0zk12r7dGt9nm4/75zOp0fTtb+ar9d1ebLWkkbSxHwIAAIDPmLJ/ZVQkz3XnQ33P39sS4/9v9g/9hhlAQv54IBwAAA==
+  </data>
+ </layer>
+</map>

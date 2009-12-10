@@ -31,7 +31,7 @@ class TileMap < Chingu::BasicGameObject
   def add_tileset options
     fail("tileset cannot added before tids (tile id's) are defined") unless @tids
     
-    @tileset = TileSet.new(:tids=>@tids,:tileset=>options[:image],:name =>options[:name])
+    @tileset = TileSet.new(:tids=>@tids,:tilesets=>options)
   end
   
   #
@@ -46,9 +46,8 @@ class TileMap < Chingu::BasicGameObject
   #create a tileset and assign each tile a face from it
   def set_tiles array, tileset_info
     fail("wrong sized tile info given to map") unless array.size == size
-    @tids = array
-    add_tileset tileset_info
     
+    add_tileset tileset_info
     t =0
     @height.times{|h| @map.each{|w| w[h].set_info array[t],@tileset;t+=1}} #breadth first through a 2d array - feels dubious...
     
@@ -133,23 +132,39 @@ class TileMap < Chingu::BasicGameObject
     end
     
     def initialize options
-      #tile image
-      @image = options[:tileset].split('/').last
-      #name
-      @name = options[:name] || "nonameset"
       @tids = options[:tids]
+      sets = []
+      options[:tilesets].each do |ts|
+        image = ts[:image].split('/').last
+        #name = ts[:name] || "nonameset"
+        ftid = ts[:firstid] || 1
+        sets <<{:image =>image,:name=>name,:ftid=>ftid}
+      end
       
-      #load all tiles from tileset image
-      tiles = Gosu::Image.load_tiles($window,TileSet.find(@image),Tile.const_get('TILE_WIDTH'),Tile.const_get('TILE_HEIGHT'),true)
-      #keep only the tiles used in the map
+      #load all tiles from tileset images
+      sets.each do |s|
+        s[:tiles] =Gosu::Image.load_tiles($window,TileSet.find(s[:image]),Tile.const_get('TILE_WIDTH'),Tile.const_get('TILE_HEIGHT'),true)
+      end
+      
+      ##keep only the tiles used in the map
       @tiles = {}
-      @tids.each{|x|@tiles[x]= tiles[x-1] unless x==0}
+      @tids.each do |x|
+        next if x ==0
+        #find which set x is in
+        ind = 0
+        sets.each{|s| x <s[:ftid] ? lambda{ind = sets.index(s)-1;break} : ind = sets.index(s)}
+        
+        tiles = sets[ind][:tiles] # the set x is found in
+        index = x - sets[ind][:ftid] # the index of x in the set
+        @tiles[x]=tiles[index] unless x ==0 
+      end
+      #@tiles[x]= tiles[x-1] unless x==0
     end
     
     #
     #given a tile number, return an image that maps to it
     def get_tile tile_no
-      @tiles[tile_no] ? @tiles[tile_no] : fail("tile #{tile_no} does not exist in this map")
+      @tiles[tile_no] ? @tiles[tile_no] : fail("tile #{tile_no} does not exist in map #{@name}")
     end
   end
   

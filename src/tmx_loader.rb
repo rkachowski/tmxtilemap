@@ -22,7 +22,7 @@ class TmxTileMapLoader
     #create a map along tmx definitions
     map = create_map tmx_info[:global]
     #fill map with tile data
-    fill_map map, tmx_info[:layers], tmx_info[:tilesets].first
+    fill_map map, tmx_info[:layers], tmx_info[:tilesets]
     map
   end
     
@@ -46,17 +46,16 @@ class TmxTileMapLoader
     #NOTE: we are currently only supporting one tile layer
     map_data = uncode_map_info info.first[:data]
     map_data = map_data.to_a.first#assuming only one line of data - map_data is now a String of size n_tiles*4 
-    tiles = map_data.bytes.to_a #get byte data of each char
+    t = map_data.bytes.to_a #get byte data of each char
     
-    #we only care about the first of every 4 bytes, so clear the rest
-    0.upto(tiles.size){|i| tiles[i] = nil unless i%4==0}
-    tiles.compact!
+    tiles = Array.new(t.size/4)
+    0.upto(t.size/4-1){|i| p=0; tiles[i] = t[i*4..i*4+3].inject{|s,n| p+=1; s+n+(p*255*n)} }
+     
+     #add tile ids
+    map.tids= tiles.uniq
     
     #add the tile info to our map
     map.set_tiles tiles,tileset
-    
-    #add tile ids
-    map.tids= tiles.uniq
   end
     
   #
@@ -81,9 +80,10 @@ class TmxTileMapLoader
     tilesets = []
     map.xpath('tileset').each do |t| 
       name = t.attribute('name').to_s
+      first_tid = t.attribute('firstgid').to_s.to_i
       image = t.xpath('image').attribute('source').to_s
       
-      tilesets << {:name =>name,:image =>image}
+      tilesets << {:name =>name,:image =>image, :firstid => first_tid}
     end
     
     #get info for each layer
