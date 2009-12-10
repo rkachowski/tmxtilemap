@@ -1,13 +1,13 @@
 class Character < Chingu::GameObject
   has_trait :collision_detection
   has_trait :bounding_box, :scale => 0.8, :debug =>true
-  attr_reader :map
+  attr_reader :map, :speed
   def initialize options
     super
     @map = options[:tilemap]
     @behaviours = [] #sequential behaviours
     @std_behaviours =[] #parallel behaviours that are always run
-    
+    @speed = 1
     #
     # debug/dev crap
     add_std_behaviour TileCollisionResponse, {}

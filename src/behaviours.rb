@@ -19,18 +19,18 @@ class Behaviour
 end
 
 #
-# A behaviour that moves the character towards the player
-class MoveToPlayer < Behaviour
+# A behaviour that moves the character towards a second character
+class MoveToCharacter < Behaviour
   MIN_DISTANCE = 5 # minimum distance allowed between player and character
   
   def initialize options
     super
-    @player = options[:player]
+    @target = options[:target]
   end
     
   def update
-    xcomp = @player.x - @character.x
-    ycomp = @player.y - @character.y
+    xcomp = @target.x - @character.x
+    ycomp = @target.y - @character.y
     distance = Math.sqrt((xcomp)**2+(ycomp)**2)
     #puts distance
     if distance > MIN_DISTANCE
