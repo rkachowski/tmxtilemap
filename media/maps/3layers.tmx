@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
+<map version="1.0" orientation="orthogonal" width="30" height="30" tilewidth="16" tileheight="16">
+ <tileset name="Untitled" firstgid="1" tilewidth="16" tileheight="16">
+  <image source="kren.png"/>
+ </tileset>
+ <layer name="Layer 0" width="30" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAAO3XMREAAAjEMFy/fQ4TwJAY6NzUvhw0AQAAvrp4pGk2RoZTJBAOAAA=
+  </data>
+ </layer>
+ <layer name="Layer 1" width="30" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAAGNgGAXUAEpArDwA9loCsdUA2BsAxIEDYC8pYDRORsEoGAWjYBSMAuyA1DqSWnUqqXUktepUUuvI0Tp1FIwkAAA+MpvKEA4AAA==
+  </data>
+ </layer>
+</map>

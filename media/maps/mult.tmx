@@ -4,12 +4,12 @@
  <tileset name="kren" firstgid="1" tilewidth="16" tileheight="16">
   <image source="kren.png"/>
  </tileset>
- <tileset name="arachne" firstgid="438" tilewidth="16" tileheight="16" spacing="1">
+ <tileset name="arac" firstgid="438" tilewidth="16" tileheight="16">
   <image source="bugtilesblueb.png"/>
  </tileset>
  <layer name="Layer 0" width="60" height="30">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAAO3PUQ5AMBBF0bIKbAKrswtrsiVffk2DECExiaY17kleMm1a+pzbFZJSUrl/oK9t9LWNvrbR1zb62kZf27R9h2zJ0zk12r7dGt9nm4/75zOp0fTtb+ar9d1ebLWkkbSxHwIAAIDPmLJ/ZVQkz3XnQ33P39sS4/9v9g/9hhlAQv54IBwAAA==
+   H4sIAAAAAAAAAO2WQQ5AMBBFyylwCZzOLVzJFbgJGxYsTIMQUVqJRqf/JS8ZTVN5NirETkTGZCL8AL28QS9v0Msb9PIGvbxBL29Me6tgUXf+G6a9xars2ebj+nmPLjXtbSx8I5PeUjFfPavWVNjqTcmMzL9/1S22ev9CT62DR70AAACAq8jfdaghF7a78JND4JftC7uTb85wSdk4kpODvTOMLv5rIBwAAA==
   </data>
  </layer>
 </map>

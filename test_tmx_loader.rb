@@ -10,7 +10,7 @@ class Game < Chingu::Window
     
     super(640,480,false)
     self.input = {:esc =>:exit}
-    @map = TmxTileMapLoader["mult2.tmx"]
+    @map = TmxTileMapLoader["3layers.tmx"]
   end
   
   def draw 

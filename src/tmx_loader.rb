@@ -44,7 +44,9 @@ class TmxTileMapLoader
   # take map and fill it with tile layout info
   def self.fill_map map, info, tileset
     #NOTE: we are currently only supporting one tile layer
-    map_data = uncode_map_info info.first[:data]
+    layer = 0
+    info.each{|h| layer = h if h[:name] =="Layer 0"}
+    map_data = uncode_map_info layer[:data]
     map_data = map_data.to_a.first#assuming only one line of data - map_data is now a String of size n_tiles*4 
     t = map_data.bytes.to_a #get byte data of each char
     
@@ -75,15 +77,17 @@ class TmxTileMapLoader
     global[:height] = map.attribute('height').to_s.to_i
     global[:tile_width] = map.attribute('tilewidth').to_s.to_i
     global[:tile_height] = map.attribute('tileheight').to_s.to_i
+    
       
     #get info for each tileset
     tilesets = []
     map.xpath('tileset').each do |t| 
       name = t.attribute('name').to_s
       first_tid = t.attribute('firstgid').to_s.to_i
+      spacing = t.attribute('spacing').to_s.to_i
       image = t.xpath('image').attribute('source').to_s
       
-      tilesets << {:name =>name,:image =>image, :firstid => first_tid}
+      tilesets << {:name =>name,:image =>image, :firstid => first_tid, :spacing=>spacing}
     end
     
     #get info for each layer

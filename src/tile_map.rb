@@ -138,11 +138,12 @@ class TileMap < Chingu::BasicGameObject
         image = ts[:image].split('/').last
         #name = ts[:name] || "nonameset"
         ftid = ts[:firstid] || 1
-        sets <<{:image =>image,:name=>name,:ftid=>ftid}
+        sets <<{:image =>image,:name=>name,:ftid=>ftid, :spacing =>ts[:spacing]}
       end
       
       #load all tiles from tileset images
       sets.each do |s|
+        sp = s[:spacing] || 0 #gosu doesnt handle spaced tiles :(
         s[:tiles] =Gosu::Image.load_tiles($window,TileSet.find(s[:image]),Tile.const_get('TILE_WIDTH'),Tile.const_get('TILE_HEIGHT'),true)
       end
       
@@ -156,6 +157,7 @@ class TileMap < Chingu::BasicGameObject
         
         tiles = sets[ind][:tiles] # the set x is found in
         index = x - sets[ind][:ftid] # the index of x in the set
+        
         @tiles[x]=tiles[index] unless x ==0 
       end
       #@tiles[x]= tiles[x-1] unless x==0
