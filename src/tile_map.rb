@@ -2,7 +2,7 @@
 # An arrangement of tiles
 class TileMap < Chingu::BasicGameObject
   attr_accessor :map,:name,:tids
-    
+  attr_reader :x,:y
   def initialize options
     @size = options[:size]
     @width = @size[0]
@@ -18,7 +18,7 @@ class TileMap < Chingu::BasicGameObject
     @name = "noname"
     #initialize map
     @map = Array.new(@width){Array.new(@height){Tile.new(:x=>8)}}
-    @map.each_index{|j| @map[j].each_index{|i| @map[j][i].y = i *@map[j][i].image.height + @map[j][i].image.height/2 ; @map[j][i].x =j *@map[j][i].image.width + @map[j][i].image.width/2  } } # set initial positions of tiles
+    @map.each_index{|j| @map[j].each_index{|i| @map[j][i].y = i *Tile.const_get("TILE_HEIGHT") + Tile.const_get("TILE_HEIGHT")/2 ; @map[j][i].x =j *Tile.const_get("TILE_WIDTH") + Tile.const_get("TILE_WIDTH")/2  } } # set initial positions of tiles
     get_drawable_grid
     
     @tileset = nil
@@ -115,6 +115,15 @@ class TileMap < Chingu::BasicGameObject
   end
   
   #
+  #given a set of coordinates, return whether there is a tile there.
+  #used for scrolling
+  #(empty tiles count as tiles)
+  def tile_exists_at? position
+    c = get_map_cell position
+    c[0] >=0 and c[0] <@width-1 and c[1] >=0 and c[1] <=@height-1
+  end
+  
+  #
   # returns the tile at this position, used for collision response
   def get_tile_at position
     c = get_map_cell position
@@ -174,7 +183,6 @@ class TileMap < Chingu::BasicGameObject
     attr_accessor :solid, :x,:y,:image, :name, :type, :tileset
     def initialize options
       @name = options[:name] || "t_default.png"
-      @image = Gosu::Image[@name].retrofy
       @solid = true
       @x = 0
       @y = 0
@@ -191,7 +199,7 @@ class TileMap < Chingu::BasicGameObject
     end
     
     def draw
-      @image.draw(@x-TILE_WIDTH/2,@y-TILE_HEIGHT/2,0) if @image
+      @image.draw(@x-TILE_WIDTH/2,@y-TILE_HEIGHT/2,5) if @image
     end
     
     def t
