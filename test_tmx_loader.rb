@@ -1,16 +1,15 @@
-require 'rubygems'
 require 'chingu'
-require 'gosu'
 require 'opengl'
+include Chingu
 
 require_all(File.join(ROOT, "src"))
 
-class Game < Chingu::Window
+class Game < Window
   def initialize
     
     super(640,480,false)
     self.input = {:esc =>:exit}
-    @map = TmxTileMapLoader["3layers.tmx"]
+    @map = TmxTileMap["3layers.tmx"]
   end
   
   def draw 

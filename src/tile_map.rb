@@ -29,6 +29,7 @@ class TileMap < Chingu::BasicGameObject
   end
   
   def add_tileset options
+
     fail("tileset cannot added before tids (tile id's) are defined") unless @tids
     
     @tileset = TileSet.new(:tids=>@tids,:tilesets=>options)
@@ -162,7 +163,8 @@ class TileMap < Chingu::BasicGameObject
         next if x ==0
         #find which set x is in
         ind = 0
-        sets.each{|s| x <s[:ftid] ? lambda{ind = sets.index(s)-1;break} : ind = sets.index(s)}
+        
+        sets.each{|s| x < s[:ftid] ? lambda{ind = sets.index(s)-1;break} : ind = sets.index(s)}
         
         tiles = sets[ind][:tiles] # the set x is found in
         index = x - sets[ind][:ftid] # the index of x in the set

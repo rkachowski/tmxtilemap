@@ -5,13 +5,13 @@ require 'nokogiri'
 # load a tmx file (produced by Tiled map editor mapeditor.org )
 # return a TileMap and TileSets that match tmx info
 class TmxTileMap
-  include NamedResource
+  include Chingu::NamedResource
   
   TmxTileMap.autoload_dirs = [ File.join("media","maps"),"maps",ROOT,File.join("..","media","maps")]
   
   def self.autoload(name)
     @name = name
-      (path = find_file(name)) ? load(path) : nil
+      (path = find_file(name)) ? load(path) : fail("tilemap '#{name}' not found")
   end
     
   def self.load file
@@ -45,21 +45,28 @@ class TmxTileMap
   #
   # take map and fill it with tile layout info
   def self.fill_map map, info, tileset
-    #NOTE: we are currently only supporting one tile layer
-    layer = 0
-    info.each{|h| layer = h if h[:name] =="Layer 0"}
-    map_data = uncode_map_info layer[:data]
-    map_data = map_data.to_a.first#assuming only one line of data - map_data is now a String of size n_tiles*4 
-    t = map_data.bytes.to_a #get byte data of each char
+    tilez = Array.new
     
-    tiles = Array.new(t.size/4)
-    0.upto(t.size/4-1){|i| p=0; tiles[i] = t[i*4..i*4+3].inject{|s,n| p+=1; s+n+(p*255*n)} }
-     
+    info.each do |h| 
+      layer = h # if h[:name] =="Layer 0"
+      map_data = uncode_map_info layer[:data]
+      
+      map_data = map_data.to_a.first#assuming only one line of data - map_data is now a String of size n_tiles*4 
+      t = map_data.bytes.to_a #get byte data of each char
+      
+      tiles = Array.new(t.size/4)
+      0.upto(t.size/4-1){|i| p=0; tiles[i] = t[i*4..i*4+3].inject{|s,n| p+=1; s+n+(p*255*n)} }
+      tilez << tiles
+    end
+  
+    #merge tile layers
+    tilez.each{|t| t.each_with_index{|tx,i| tilez[0][i] = tx unless tx ==0}}
+      
      #add tile ids
-    map.tids= tiles.uniq
+    map.tids= tilez.first.uniq
     
     #add the tile info to our map
-    map.set_tiles tiles,tileset
+    map.set_tiles tilez[0],tileset
   end
     
   #
