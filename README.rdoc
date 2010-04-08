@@ -1,6 +1,6 @@
 An extension to allow chingu to load tilemaps from the tiled map editor ( mapeditor.org )
 
-To use
+To use, first copy tmx_loader.rb and tile_map.rb to your project. Then you can specify the .tmx file via chingu's autoload feature, e.g.
 
     map = TmxTileMap["filename.tmx"]
     
