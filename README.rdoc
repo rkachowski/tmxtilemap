@@ -1,0 +1,15 @@
+An extension to allow chingu to load tilemaps from the tiled map editor ( mapeditor.org )
+
+To use
+
+    map = TmxTileMap["filename.tmx"]
+    
+then simply add to your draw / update loop as with any other BasicGameObject
+    
+Directories that are automatically searched for filename.tmx (relative to the script) are
+
+* "maps"
+* "media/maps"
+* "../media/maps"
+
+Custom directories can be added in the usual chingu way
