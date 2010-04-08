@@ -1,3 +1,9 @@
+=begin
+  tile_map.rb - A collection of classes to display and handle tile map info
+  
+  - TileMap : A BasicGameObject which handles the drawing, moving and querying of the tilemap
+=end
+
 #
 # An arrangement of tiles
 class TileMap < Chingu::BasicGameObject

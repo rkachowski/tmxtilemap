@@ -48,11 +48,13 @@ class TmxTileMap
     tilez = Array.new
     
     info.each do |h| 
-      layer = h # if h[:name] =="Layer 0"
-      map_data = uncode_map_info layer[:data]
+      layer = h
+      raw_map_data = uncode_map_info layer[:data]
+      string_map_data = ""
+      raw_map_data.to_a.each{|rd| string_map_data << rd}
+      #string_map_data is now a String of size n_tiles*4
       
-      map_data = map_data.to_a.first#assuming only one line of data - map_data is now a String of size n_tiles*4 
-      t = map_data.bytes.to_a #get byte data of each char
+      t = string_map_data.bytes.to_a #get byte data of each char
       
       tiles = Array.new(t.size/4)
       0.upto(t.size/4-1){|i| p=0; tiles[i] = t[i*4..i*4+3].inject{|s,n| p+=1; s+n+(p*255*n)} }
